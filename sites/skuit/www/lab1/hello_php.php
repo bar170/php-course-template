@@ -1,6 +1,6 @@
 <?php
 $sum = 2006 + 25 -1;
-$fio = 'Эрик ' . 'Павлов'
+$fio = 'Эрик ' . 'Павлов';
 $length = 1 * 2;
 $width = 11 + 7;
 $square = $length  * $width;
