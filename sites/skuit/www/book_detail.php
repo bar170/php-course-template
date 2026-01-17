@@ -1,31 +1,50 @@
 <?php
 // Путь к JSON-файлу
 $jsonFile = __DIR__ . '/books_storage.json';
+$studentName = "Студент Студентыч";
 
-// Проверяем, существует ли файл
+// Проверка файла
 if (!file_exists($jsonFile)) {
     die("Файл books_storage.json не найден!");
 }
 
-// Читаем содержимое файла
-$jsonData = file_get_contents($jsonFile);
-
-// Преобразуем JSON в массив PHP
-$books = json_decode($jsonData, true);
-
-// Проверяем, удалось ли декодировать JSON
+// Читаем JSON и преобразуем в массив
+$books = json_decode(file_get_contents($jsonFile), true);
 if ($books === null) {
     die("Ошибка при чтении JSON: " . json_last_error_msg());
 }
 
-$studentName = "Студент Студентыч";
+// Получаем ID книги из GET-параметра
+if (!isset($_GET['id'])) {
+    die("Не указан ID книги!");
+}
+
+$bookId = (int)$_GET['id'];
+
+// Ищем книгу с этим ID
+$book = null;
+foreach ($books as $b) {
+    if ($b['id'] === $bookId) {
+        $book = $b;
+        break;
+    }
+}
+
+if ($book === null) {
+    die("Книга с ID $bookId не найдена!");
+} else {
+    $bookName = $book['name'];
+    $bookAuthor = $book['author'];
+    $bookYear = $book['year'];
+    $bookDescription = $book['description'];
+}
 ?>
 
 <!DOCTYPE html>
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <title>Главная страница каталога</title>
+    <title><?php echo $bookName; ?> — Детальная страница</title>
     <style>
         html, body {
             height: 100%;
@@ -53,7 +72,8 @@ $studentName = "Студент Студентыч";
             flex: 1;
             padding: 20px;
             background-color: white;
-            margin: 20px;
+            max-width: 800px;
+            margin: 20px auto 0 auto;
             border-radius: 5px;
             box-shadow: 0 0 10px rgba(0,0,0,0.1);
         }
@@ -61,41 +81,22 @@ $studentName = "Студент Студентыч";
         h1 {
             margin-top: 0;
         }
-
-        h2 {
-            margin-bottom: 5px;
-        }
-
-        a {
-            color: #333;
-            text-decoration: none;
-        }
-
-        a:hover {
-            text-decoration: underline;
-        }
-
-        hr {
-            border: 0;
-            border-top: 1px solid #ccc;
-            margin: 15px 0;
-        }
     </style>
 </head>
 <body>
+
 <header>
     <h2>Книжный каталог</h2>
+    <p>Студент: <?php echo $studentName; ?></p>
 </header>
+
 <main>
-    <h1>Список книг</h1>
-    <?php foreach ($books as $book): ?>
-        <h2>
-            <a href="book_detail.php?id=<?php echo $book['id']; ?>"><?php echo $book['name']; ?></a>
-        </h2>
-        <p><strong>Автор:</strong> <?php echo $book['author']; ?></p>
-        <p><strong>Год издания:</strong> <?php echo $book['year']; ?></p>
-        <hr>
-    <?php endforeach; ?>
+    <h1><?php echo $bookName; ?></h1>
+
+    <p><strong>Автор:</strong> <?php echo $bookAuthor; ?></p>
+    <p><strong>Год издания:</strong> <?php echo $bookYear; ?></p>
+
+    <p><?php echo $bookDescription; ?></p>
 </main>
 
 <footer>
