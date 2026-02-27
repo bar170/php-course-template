@@ -1,7 +1,11 @@
 #!/bin/bash
 
-# Установка vim
-apt-get update && apt-get install -y vim
+# Обновление списка пакетов и установка утилит
+# Добавлены пакеты: sqlite3 и php8.2-sqlite3
+apt-get update && apt-get install -y \
+    vim \
+    sqlite3 \
+    php8.2-sqlite3
 
 # Создание структуры папок
 mkdir -p /workspaces/php-course-template/sites/skuit/www
